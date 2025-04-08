@@ -16,34 +16,26 @@ const Login = () =>{
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'username', password: 'password' })
+                body: JSON.stringify({ username: username, password: password })
             };
-            fetch('https://carros-electricos.wiremockapi.cloud/auth', requestOptions)
-                .then(response => response.json())
-                .then(data => this.setState({ postId: data.id }));
+            const response = await fetch('https://carros-electricos.wiremockapi.cloud/auth', requestOptions)
+                .then(response => response.json());
+            
+            if (response.errors && response.errors.length > 0) {
+                //ERROR POR EL LIMITE DE INTENTOS PROFESOR
+                alert(response.errors[0]); 
+                //return; 
+            }
+
+            navigate('/lista-carros');           
+            
+            
         }
         catch(error){
-            alert("Clave invalida");
-            navigate('/lista-carros');
+            console.log(error);
+            alert("Error al intentar hacer login");
         }
     }
-
-    /*const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const user = "alexx123@mail.com";
-        const password = "123456";
-
-        if(email === user && password === password){
-            navigate('/lista-carros');
-        }   
-        else{
-            alert("Login failed");
-        }
-
-    }   */
-    //agregar el handleLogin, para hacer el login por API (wiremock o cualquier otra vista en clase de electiva)
-
 
 return <>
             <form class="max-w-sm mx-auto" onSubmit={handleLogin}>
